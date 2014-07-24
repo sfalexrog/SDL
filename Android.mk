@@ -8,9 +8,11 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := SDL2
+#LOCAL_MODULE := SDL2
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
+
+LOCAL_ARM_MODE := arm
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)
 
@@ -49,7 +51,7 @@ LOCAL_SRC_FILES := \
 LOCAL_CFLAGS += -DGL_GLEXT_PROTOTYPES
 LOCAL_LDLIBS := -ldl -lGLESv1_CM -lGLESv2 -llog -landroid
 
-include $(BUILD_SHARED_LIBRARY)
+#include $(BUILD_SHARED_LIBRARY)
 
 ###########################
 #
@@ -61,7 +63,7 @@ LOCAL_MODULE := SDL2_static
 
 LOCAL_MODULE_FILENAME := libSDL2
 
-LOCAL_SRC_FILES += $(subst $(LOCAL_PATH)/,,$(LOCAL_PATH)/src/main/android/SDL_android_main.c)
+#LOCAL_SRC_FILES += $(subst $(LOCAL_PATH)/,,$(LOCAL_PATH)/src/main/android/SDL_android_main.c)
 
 LOCAL_LDLIBS := 
 LOCAL_EXPORT_LDLIBS := -Wl,--undefined=Java_org_libsdl_app_SDLActivity_nativeInit -ldl -lGLESv1_CM -lGLESv2 -llog -landroid
