@@ -601,6 +601,25 @@ macro(CheckDirectFB)
 endmacro(CheckDirectFB)
 
 # Requires:
+# - n/a
+macro(CheckMX6)
+  if(VIDEO_MX6)
+    check_c_source_compiles("
+        #define EGL_API_FB
+        #include <EGL/eglvivante.h>
+        int main(int argc, char** argv) {}" HAVE_VIDEO_OPENGL_EGL_VIVANTE)
+    if(HAVE_VIDEO_OPENGL_EGL_VIVANTE)
+      set(HAVE_VIDEO_MX6 TRUE)
+      set(HAVE_SDL_VIDEO TRUE)
+
+      file(GLOB MX6_SOURCES ${SDL2_SOURCE_DIR}/src/video/mx6/*.c)
+      set(SOURCE_FILES ${SOURCE_FILES} ${MX6_SOURCES})
+      set(SDL_VIDEO_DRIVER_MX6 1)
+    endif(HAVE_VIDEO_OPENGL_EGL_VIVANTE)
+  endif(VIDEO_MX6)
+endmacro(CheckMX6)
+
+# Requires:
 # - nada
 macro(CheckOpenGLX11)
   if(VIDEO_OPENGL)
@@ -624,6 +643,7 @@ endmacro(CheckOpenGLX11)
 macro(CheckOpenGLESX11)
   if(VIDEO_OPENGLES)
     check_c_source_compiles("
+        #define EGL_API_FB
         #include <EGL/egl.h>
         int main (int argc, char** argv) {}" HAVE_VIDEO_OPENGL_EGL)
     if(HAVE_VIDEO_OPENGL_EGL)
@@ -917,3 +937,32 @@ macro(CheckUSBHID)
     set(CMAKE_REQUIRED_FLAGS)
   endif(HAVE_USBHID)
 endmacro(CheckUSBHID)
+
+# Requires:
+# - n/a
+macro(CheckRPI)
+  if(VIDEO_RPI)
+    set(VIDEO_RPI_INCLUDE_DIRS "/opt/vc/include" "/opt/vc/include/interface/vcos/pthreads" "/opt/vc/include/interface/vmcs_host/linux/" )
+    set(VIDEO_RPI_LIBRARY_DIRS "/opt/vc/lib" )
+    set(VIDEO_RPI_LIBS bcm_host )
+    listtostr(VIDEO_RPI_INCLUDE_DIRS VIDEO_RPI_INCLUDE_FLAGS "-I")
+    listtostr(VIDEO_RPI_LIBRARY_DIRS VIDEO_RPI_LIBRARY_FLAGS "-L")
+
+    set(CMAKE_REQUIRED_FLAGS "${VIDEO_RPI_INCLUDE_FLAGS} ${VIDEO_RPI_LIBRARY_FLAGS}")
+    set(CMAKE_REQUIRED_LIBRARIES "${VIDEO_RPI_LIBS}")
+    check_c_source_compiles("
+        #include <bcm_host.h>
+        int main(int argc, char **argv) {}" HAVE_VIDEO_RPI)
+    set(CMAKE_REQUIRED_FLAGS)
+    set(CMAKE_REQUIRED_LIBRARIES)
+
+    if(SDL_VIDEO AND HAVE_VIDEO_RPI)
+      set(HAVE_SDL_VIDEO TRUE)
+      set(SDL_VIDEO_DRIVER_RPI 1)
+      file(GLOB VIDEO_RPI_SOURCES ${SDL2_SOURCE_DIR}/src/video/raspberry/*.c)
+      set(SOURCE_FILES ${SOURCE_FILES} ${VIDEO_RPI_SOURCES})
+      list(APPEND EXTRA_LIBS ${VIDEO_RPI_LIBS})
+      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${VIDEO_RPI_INCLUDE_FLAGS} ${VIDEO_RPI_LIBRARY_FLAGS}")
+    endif(SDL_VIDEO AND HAVE_VIDEO_RPI)
+  endif(VIDEO_RPI)
+endmacro(CheckRPI)

@@ -1,5 +1,4 @@
-================================================================================
-SDL2 for Raspberry Pi
+Raspberry Pi
 ================================================================================
 
 Requirements:
@@ -15,6 +14,7 @@ Raspbian (other Linux distros may work as well).
 * Sound via ALSA
 * Input (mouse/keyboard/joystick) via EVDEV
 * Hotplugging of input devices via UDEV
+
 
 ================================================================================
  Raspbian Build Dependencies
