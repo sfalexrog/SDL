@@ -14,10 +14,10 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 
 LOCAL_ARM_MODE := arm
 
-ifeq ($(TARGET_ARCH_ABI),armeabi)
-    LOCAL_ARM_NEON := false
-else
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
     LOCAL_ARM_NEON := true
+else
+    LOCAL_ARM_NEON := false
 endif
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)
