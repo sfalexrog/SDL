@@ -47,7 +47,7 @@ set(SDL_BINARY_AGE 6)
 set(SDL_VERSION "${SDL_MAJOR_VERSION}.${SDL_MINOR_VERSION}.${SDL_MICRO_VERSION}")
 
 # Set defaults preventing destination file conflicts
-set(CMAKE_DEBUG_POSTFIX "d"
+set(SDL2_DEBUG_POSTFIX "d"
     CACHE STRING "Name suffix for debug builds")
 
 mark_as_advanced(CMAKE_IMPORT_LIBRARY_SUFFIX CMAKE_DEBUG_POSTFIX)
@@ -1664,11 +1664,13 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS}")
 
 # Always build SDLmain
 add_library(SDL2main STATIC ${SDLMAIN_SOURCES})
+set_target_properties(SDL2main PROPERTIES DEBUG_POSTFIX ${SDL2_DEBUG_POSTFIX})
 target_include_directories(SDL2main PUBLIC $<INSTALL_INTERFACE:include> $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>)
 set(_INSTALL_LIBS "SDL2main")
 
 if(SDL_SHARED)
   add_library(SDL2 SHARED ${SOURCE_FILES} ${VERSION_SOURCES})
+  set_target_properties(SDL2 PROPERTIES DEBUG_POSTFIX ${SDL2_DEBUG_POSTFIX})
   if(APPLE)
     set_target_properties(SDL2 PROPERTIES MACOSX_RPATH 1)
   elseif(UNIX AND NOT ANDROID)
@@ -1696,6 +1698,7 @@ endif()
 if(SDL_STATIC)
   set (BUILD_SHARED_LIBS FALSE)
   add_library(SDL2-static STATIC ${SOURCE_FILES})
+  set_target_properties(SDL2-static PROPERTIES DEBUG_POSTFIX ${SDL2_DEBUG_POSTFIX})
   if (NOT SDL_SHARED OR NOT WIN32)
     set_target_properties(SDL2-static PROPERTIES OUTPUT_NAME "SDL2")
     # Note: Apparently, OUTPUT_NAME must really be unique; even when
